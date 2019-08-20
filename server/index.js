@@ -29,4 +29,16 @@ app.post("/spending", (req, res) => {
     .catch(err => res.status(500).send("an error occurred"));
 });
 
+//TODO: implement the update route
+//Routes-update route
+// app.put("/spending", (req, res)=>{
+
+// })
+
+//Routes-delete route
+app.delete("/spending", (req, res) => {
+  let query = req.body;
+  db.removeOne(query).then(result => console.log(result));
+});
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
