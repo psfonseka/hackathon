@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+const axios = require('axios');
 
 //test here
 class App extends React.Component {
@@ -21,6 +22,17 @@ class App extends React.Component {
 
   componentDidMount() {
     console.log("App mounted Successfully!");
+    this.getData();
+  }
+
+  getData() {
+    axios.get('/spending')
+      .then(data => {
+        let results = data.data.results; 
+        this.setState({
+          budgetItems: results
+        });
+      })
   }
   
   handleSubmit(event) {
@@ -53,13 +65,6 @@ class App extends React.Component {
     return (
     <div>
       <h1 id="title">Budgeting App!</h1>
-      {/* <form onSubmit={this.handleSubmit}>
-        <label>Category:<input name="categoryEntry" onChange={this.handleInputChange}/></label><br/>
-        <label>Amount:<input name="amountEntry" onChange={this.handleInputChange}/></label><br/>
-        <label>Date:<input name="dateEntry" onChange={this.handleInputChange}/></label><br/>
-        <label>Comment:<input name="commentEntry" onChange={this.handleInputChange}/></label>
-        <input type="submit" value="Submit" />
-      </form> */}
       <form onSubmit={this.handleSubmit}>
       <table id='finances'>
         <tbody>
