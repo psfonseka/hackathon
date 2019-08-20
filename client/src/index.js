@@ -25,17 +25,19 @@ class App extends React.Component {
   
   handleSubmit(event) {
     event.preventDefault();
-    let newArr = this.state.budgetItems;
-    let newEntry = {
-      category: this.state.categoryEntry,
-      amount: this.state.amountEntry,
-      date: this.state.dateEntry,
-      comment: this.state.commentEntry
-    };
-    newArr.push(newEntry);
-    this.setState({
-      budgetItems: newArr
-    });
+    if(event.which === 13) {
+      let newArr = this.state.budgetItems;
+      let newEntry = {
+        category: this.state.categoryEntry,
+        amount: this.state.amountEntry,
+        date: this.state.dateEntry,
+        comment: this.state.commentEntry
+      };
+      newArr.push(newEntry);
+      this.setState({
+        budgetItems: newArr
+      });
+    }
   }
 
   handleInputChange(event) {
@@ -51,13 +53,14 @@ class App extends React.Component {
     return (
     <div>
       <h1 id="title">Budgeting App!</h1>
-      <form onSubmit={this.handleSubmit}>
+      {/* <form onSubmit={this.handleSubmit}>
         <label>Category:<input name="categoryEntry" onChange={this.handleInputChange}/></label><br/>
         <label>Amount:<input name="amountEntry" onChange={this.handleInputChange}/></label><br/>
         <label>Date:<input name="dateEntry" onChange={this.handleInputChange}/></label><br/>
         <label>Comment:<input name="commentEntry" onChange={this.handleInputChange}/></label>
         <input type="submit" value="Submit" />
-      </form>
+      </form> */}
+      <form onSubmit={this.handleSubmit}>
       <table id='finances'>
         <tbody>
         <tr>
@@ -65,6 +68,12 @@ class App extends React.Component {
           <td>Amount</td>
           <td>Date</td>
           <td>Comment</td>
+        </tr>
+        <tr>
+          <td><input name="categoryEntry" onChange={this.handleInputChange} onKeyPress={this.handleSubmit}/></td>
+          <td><input name="amountEntry" onChange={this.handleInputChange} onKeyPress={this.handleSubmit}/></td>
+          <td><input name="dateEntry" onChange={this.handleInputChange} onKeyPress={this.handleSubmit}/></td>
+          <td><input name="commentEntry" onChange={this.handleInputChange} onKeyPress={this.handleSubmit}/></td>
         </tr>
           {this.state.budgetItems.slice().reverse().map((item) => {
             let newAmount = parseFloat(Math.round(item.amount * 100) / 100).toFixed(2);
@@ -79,6 +88,7 @@ class App extends React.Component {
           })}
         </tbody>
       </table>
+      </form>
     </div>
     );
   }
