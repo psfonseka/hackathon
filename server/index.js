@@ -38,7 +38,7 @@ app.post("/spending", (req, res) => {
 //Routes-delete route
 app.delete("/spending", (req, res) => {
   let query = req.body;
-  db.removeOne(query).then(result => console.log(result));
+  db.removeOne(query).then(result => res.send(result));
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
