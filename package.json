@@ -1,0 +1,30 @@
+{
+  "name": "empty-project",
+  "version": "1.0.0",
+  "description": "Empty project.",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "clean": "rm dist/bundle.js",
+    "build-dev": "webpack -d --mode development",
+    "build-prod": "webpack -p --mode production",
+    "start": "nodemon server/index.js"
+  },
+  "dependencies": {
+    "nodemon": "^1.19.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-hot-loader": "^4.12.11"
+  },
+  "devDependencies": {
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.6",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "webpack-dev-server": "^3.8.0"
+  }
+}
