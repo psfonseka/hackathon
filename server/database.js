@@ -16,7 +16,8 @@ db.once("open", () => {
 var spendingSchema = new mongoose.Schema({
   category: String,
   amount: Number,
-  date: String
+  date: String,
+  comment: String
 });
 
 //create the document constructor;
@@ -31,7 +32,8 @@ exports.insertOneSpending = query => {
   var expenditure = new Spending({
     category: query.category,
     amount: query.amount,
-    date: query.date
+    date: query.date,
+    comment: query.comment
   });
   return expenditure.save().catch(err => console.log(err));
 };
