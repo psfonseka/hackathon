@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {PieChart} from "react-d3-components";
+import {PieChart, BarChart} from "react-d3-components";
 const axios = require("axios");
 
 //test here
@@ -19,9 +19,13 @@ class App extends React.Component {
       modify: false,
       modifyIndex: -1,
       budgetItems: [],
-      chartData: {
+      bar: false,
+      pieData: {
         values: []
-      }
+      },
+      barData: [{
+        values: [{x: 'Empty', y: 0}]
+    }]
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -30,6 +34,7 @@ class App extends React.Component {
     this.handleStartModify = this.handleStartModify.bind(this);
     this.handleApplyModify = this.handleApplyModify.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
+    this.handleChart = this.handleChart.bind(this);
   }
 
   componentDidMount() {
@@ -48,14 +53,17 @@ class App extends React.Component {
       }
     }
     let categories = Object.keys(objData);
-    let finalData = [];
+    let finalChartData = [];
+    let finalBarData = [];
     for (let i = 0; i < categories.length; i++) {
-      finalData.push({x: categories[i], y: objData[categories[i]]});
+      finalChartData.push({x: categories[i], y: objData[categories[i]]});
     }
     this.setState({
-      chartData: {
-        values: finalData
-      }
+      pieData: {
+        values: finalChartData
+      }, barData: [{
+        values: finalChartData
+      }]
     });
   }
 
@@ -94,6 +102,13 @@ class App extends React.Component {
     if (event.which === 13) {
       this.handleSubmit(event);
     }
+  }
+
+  handleChart(event) {
+    event.preventDefault();
+    this.setState({
+      bar: this.state.bar ? false : true
+    })
   }
 
   handleInputChange(event) {
@@ -304,13 +319,23 @@ class App extends React.Component {
             </tbody>
           </table>
         </form>
-        <div id="chart">
-        <PieChart
-        data={this.state.chartData}
-        width={600}
-        height={400}
-        margin={{top: 10, bottom: 10, left: 100, right: 100}}
-        sort={null}/>
+        <div id="chart" onClick={this.handleChart}>
+        {!this.state.bar && 
+          <PieChart 
+          data={this.state.pieData}
+          width={600}
+          height={400}
+          margin={{top: 10, bottom: 10, left: 100, right: 100}}
+          sort={null}/>
+        }
+        {this.state.bar && 
+          <BarChart
+          data={this.state.barData}
+          width={400}
+          height={400}
+          margin={{top: 10, bottom: 50, left: 50, right: 10}}
+          sort={null}/>
+        }
         </div>
         
       </div>
