@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import {PieChart} from "react-d3-components";
 const axios = require("axios");
 
 //test here
@@ -17,29 +18,10 @@ class App extends React.Component {
       modCommentEntry: "",
       modify: false,
       modifyIndex: -1,
-      budgetItems: [
-        {
-          _id: "1321314",
-          category: "Auto & Transport",
-          amount: 43.43,
-          date: "08/14/2019",
-          comment: "Gas"
-        },
-        {
-          _id: "13263414",
-          category: "Bills & Heating",
-          amount: 103.42,
-          date: "08/14/2019",
-          comment: "Heating"
-        },
-        {
-          _id: "13281314",
-          category: "Taxes",
-          amount: 72.9,
-          date: "08/14/2019",
-          comment: "Federal Tax"
-        }
-      ]
+      budgetItems: [],
+      chartData: {
+        values: [{x: 'A', y: 10}, {x: 'B', y: 4}, {x: 'C', y: 3}, {x: 'D', y: 15}]
+      }
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -55,12 +37,26 @@ class App extends React.Component {
     this.getData();
   }
 
+  calculateChart() {
+    let fullData = this.state.budgetItems.slice();
+    let objData = {}
+    for (let i = 0; i < fullData.length; i++) {
+      if (objData[fullData[i].category] === undefined) {
+        objData[fullData[i].category] = fullData[i].amount;
+      } else {
+        objData[fullData[i].category] += fullData[i].amount;
+      }
+    }
+    console.log(fullData);
+    console.log(objData);
+  }
+
   getData() {
     axios.get("/spending").then(data => {
       let results = data.data.results;
       this.setState({
         budgetItems: results
-      });
+      }, () => this.calculateChart());
     });
   }
 
@@ -82,7 +78,7 @@ class App extends React.Component {
         amountEntry: "",
         dateEntry: "",
         commentEntry: ""
-      });
+      }, () => this.calculateChart());
     });
   }
 
@@ -112,7 +108,7 @@ class App extends React.Component {
       if (data.data._id === _id) {
         this.setState({
           budgetItems: newArr
-        });
+        }, () => this.calculateChart());
       } else {
         console.log("ERROR: DIDN'T DELETE ON DB");
       }
@@ -139,7 +135,7 @@ class App extends React.Component {
           modify: false,
           modifyIndex: -1,
           budgetItems: newArr
-        });
+        }, () => this.calculateChart());
       } else {
         console.log("ERROR: DIDN'T MODIFY ON DB");
       }
@@ -300,6 +296,15 @@ class App extends React.Component {
             </tbody>
           </table>
         </form>
+        <div id="chart">
+        <PieChart
+        data={this.state.chartData}
+        width={600}
+        height={400}
+        margin={{top: 10, bottom: 10, left: 100, right: 100}}
+        sort={null}/>
+        </div>
+        
       </div>
     );
   }
