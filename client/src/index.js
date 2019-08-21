@@ -20,7 +20,7 @@ class App extends React.Component {
       modifyIndex: -1,
       budgetItems: [],
       chartData: {
-        values: [{x: 'A', y: 10}, {x: 'B', y: 4}, {x: 'C', y: 3}, {x: 'D', y: 15}]
+        values: []
       }
     };
 
@@ -37,8 +37,8 @@ class App extends React.Component {
     this.getData();
   }
 
-  calculateChart() {
-    let fullData = this.state.budgetItems.slice();
+  calculateChart(data) {
+    let fullData = data.slice();
     let objData = {}
     for (let i = 0; i < fullData.length; i++) {
       if (objData[fullData[i].category] === undefined) {
@@ -47,8 +47,16 @@ class App extends React.Component {
         objData[fullData[i].category] += fullData[i].amount;
       }
     }
-    console.log(fullData);
-    console.log(objData);
+    let categories = Object.keys(objData);
+    let finalData = [];
+    for (let i = 0; i < categories.length; i++) {
+      finalData.push({x: categories[i], y: objData[categories[i]]});
+    }
+    this.setState({
+      chartData: {
+        values: finalData
+      }
+    });
   }
 
   getData() {
@@ -56,7 +64,7 @@ class App extends React.Component {
       let results = data.data.results;
       this.setState({
         budgetItems: results
-      }, () => this.calculateChart());
+      }, () => this.calculateChart(results));
     });
   }
 
@@ -78,7 +86,7 @@ class App extends React.Component {
         amountEntry: "",
         dateEntry: "",
         commentEntry: ""
-      }, () => this.calculateChart());
+      }, () => this.calculateChart(newArr));
     });
   }
 
@@ -108,7 +116,7 @@ class App extends React.Component {
       if (data.data._id === _id) {
         this.setState({
           budgetItems: newArr
-        }, () => this.calculateChart());
+        }, () => this.calculateChart(newArr));
       } else {
         console.log("ERROR: DIDN'T DELETE ON DB");
       }
@@ -135,7 +143,7 @@ class App extends React.Component {
           modify: false,
           modifyIndex: -1,
           budgetItems: newArr
-        }, () => this.calculateChart());
+        }, () => this.getData());
       } else {
         console.log("ERROR: DIDN'T MODIFY ON DB");
       }
@@ -163,7 +171,7 @@ class App extends React.Component {
     return (
       <div>
         <h1 id="title">Budgeting App!</h1>
-        <form onSubmit={this.handleSubmit}>
+        <form id="bigForm" onSubmit={this.handleSubmit}>
           <table id="finances">
             <tbody>
               <tr>
