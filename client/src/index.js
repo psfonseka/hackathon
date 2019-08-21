@@ -86,7 +86,7 @@ class App extends React.Component {
     let newArr = this.state.budgetItems.slice().reverse();
     newArr.splice(index,1);
     newArr = newArr.reverse();
-    axios.delete('/spending', {_id: _id})
+    axios.delete('/spending', { data: {_id: _id}})
       .then(data => {
         if (data.data._id === _id) {
           this.setState({
