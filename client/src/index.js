@@ -171,7 +171,7 @@ class App extends React.Component {
     return (
       <div>
         <h1 id="title">Budgeting App!</h1>
-        <form onSubmit={this.handleSubmit}>
+        <form id="bigForm" onSubmit={this.handleSubmit}>
           <table id="finances">
             <tbody>
               <tr>
