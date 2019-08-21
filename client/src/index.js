@@ -39,7 +39,16 @@ class App extends React.Component {
 
   calculateChart() {
     let fullData = this.state.budgetItems.slice();
+    let objData = {}
+    for (let i = 0; i < fullData.length; i++) {
+      if (objData[fullData[i].category] === undefined) {
+        objData[fullData[i].category] = fullData[i].amount;
+      } else {
+        objData[fullData[i].category] += fullData[i].amount;
+      }
+    }
     console.log(fullData);
+    console.log(objData);
   }
 
   getData() {
