@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const db = require("./database.js");
+const routes = require("./router.js");
 const bodyParser = require("body-parser");
 const app = express();
 const port = 3000;
@@ -27,6 +28,18 @@ app.post("/spending", (req, res) => {
   db.insertOneSpending(query)
     .then(result => res.status(200).send(result))
     .catch(err => res.status(500).send("an error occurred"));
+});
+
+//TODO: implement the update route
+//Routes-update route
+// app.put("/spending", (req, res)=>{
+
+// })
+
+//Routes-delete route
+app.delete("/spending", (req, res) => {
+  let query = req.body;
+  db.removeOne(query).then(result => res.send(result));
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

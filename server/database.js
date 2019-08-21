@@ -37,3 +37,9 @@ exports.insertOneSpending = query => {
   });
   return expenditure.save().catch(err => console.log(err));
 };
+
+//Queries-removeOne
+
+exports.removeOne = query => {
+  return Spending.findByIdAndRemove({ _id: query._id }).exec();
+};
