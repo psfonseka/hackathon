@@ -11,6 +11,12 @@ class App extends React.Component {
       amountEntry: "",
       dateEntry: "",
       commentEntry: "",
+      modCategoryEntry: "",
+      modAmountEntry: "",
+      modDateEntry: "",
+      modCommentEntry: "",
+      modify: false,
+      modifyIndex: -1,
       budgetItems: [{_id: "1321314", category: "Auto & Transport", amount: 43.43, date: "08/14/2019", comment: "Gas"},
       {_id: "13263414", category: "Bills & Heating", amount: 103.42, date: "08/14/2019", comment: "Heating"},
       {_id: "13281314", category: "Taxes", amount: 72.90, date: "08/14/2019", comment: "Federal Tax"}]
@@ -19,7 +25,8 @@ class App extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-    this.handleModify = this.handleModify.bind(this);
+    this.handleStartModify = this.handleStartModify.bind(this);
+    this.handleApplyModify = this.handleApplyModify.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
   }
 
@@ -82,10 +89,10 @@ class App extends React.Component {
   handleDelete(event) {
     event.preventDefault();
     let _id = event.target.value;
-    let index = event.target.getAttribute("index");
-    let newArr = this.state.budgetItems.slice().reverse();
+    let rIndex = event.target.getAttribute("index");
+    let index = this.state.budgetItems.length - rIndex-1;
+    let newArr = this.state.budgetItems.slice();
     newArr.splice(index,1);
-    newArr = newArr.reverse();
     axios.delete('/spending', { data: {_id: _id}})
       .then(data => {
         if (data.data._id === _id) {
@@ -98,8 +105,49 @@ class App extends React.Component {
       })
   }
 
-  handleModify(event) {
-  
+  handleApplyModify(event) {
+    event.preventDefault();
+    let rIndex = event.target.getAttribute("index");
+    let index = this.state.budgetItems.length - rIndex-1;
+    let newArr = this.state.budgetItems.slice();
+    let obj = newArr[index];
+    obj.category = this.state.modCategoryEntry
+    obj.amount = this.state.modAmountEntry;
+    obj.comment = this.state.modCommentEntry;
+    obj.date = this.state.modDateEntry;
+    axios.put('/spending', obj)
+      .then(data => {
+        if (data.data._id === _id) {
+          this.setState({
+            modCategoryEntry: "",
+            modAmountEntry: "",
+            modCommentEntry: "",
+            modDateEntry: "",
+            modify: false,
+            modifyIndex: -1,
+            budgetItems: newArr
+          });
+        } else {
+          console.log("ERROR: DIDN'T MODIFY ON DB");
+        }
+      })
+  }
+
+  handleStartModify(event) {
+    event.preventDefault();
+    let _id = event.target.value;
+    let rIndex = event.target.getAttribute("index");
+    let index = this.state.budgetItems.length - rIndex-1;
+    let newArr = this.state.budgetItems.slice();
+    let oldInfo = newArr[index];
+    this.setState({
+      modCategoryEntry: oldInfo.category,
+      modAmountEntry: oldInfo.amount,
+      modCommentEntry: oldInfo.comment,
+      modDateEntry: oldInfo.date,
+      modify: true,
+      modifyIndex: index
+    });
   }
 
   render() {
@@ -124,16 +172,32 @@ class App extends React.Component {
           <td><button onClick={this.handleSubmit}>Submit</button></td>
         </tr>
           {this.state.budgetItems.slice().reverse().map((item, i) => {
-            let newAmount = parseFloat(Math.round(item.amount * 100) / 100).toFixed(2);
-            return (
-              <tr key={item._id}>
-                <td>{item.category}</td>
-                <td>${newAmount}</td>
-                <td>{item.date}</td>
-                <td>{item.comment}</td>
-                <td><button value={item._id} index={i} onClick={this.handleDelete}>Delete</button><button value={item._id} index={i} onClick={this.handleModify}>Modify</button></td>
-              </tr>
-            )
+            let rIndex = -1;
+            if (this.state.modifyIndex > -1) {
+              rIndex = this.state.budgetItems.length - this.state.modifyIndex -1;
+            }
+            if (this.state.modify && rIndex === i) {
+              return (
+                <tr key={item._id}>
+                  <td><input name="modCategoryEntry" value={this.state.modCategoryEntry} onChange={this.handleInputChange}/></td>
+                  <td><input name="modAmountEntry" value={this.state.modAmountEntry} onChange={this.handleInputChange} /></td>
+                  <td><input name="modDateEntry" value={this.state.modDateEntry} onChange={this.handleInputChange} /></td>
+                  <td><input name="modCommentEntry" value={this.state.modCommentEntry} onChange={this.handleInputChange} /></td>
+                  <td><button value={item._id} index={i} onClick={this.handleApplyModify}>Apply</button></td>
+                </tr>
+              )
+            } else {
+              let newAmount = parseFloat(Math.round(item.amount * 100) / 100).toFixed(2);
+              return (
+                <tr key={item._id}>
+                  <td>{item.category}</td>
+                  <td>${newAmount}</td>
+                  <td>{item.date}</td>
+                  <td>{item.comment}</td>
+                  <td><button value={item._id} index={i} onClick={this.handleDelete}>Delete</button><button value={item._id} index={i} onClick={this.handleStartModify}>Modify</button></td>
+                </tr>
+              )
+            }
           })}
         </tbody>
       </table>
