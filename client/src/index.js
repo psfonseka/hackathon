@@ -111,20 +111,26 @@ class App extends React.Component {
     let index = this.state.budgetItems.length - rIndex-1;
     let newArr = this.state.budgetItems.slice();
     let obj = newArr[index];
-    console.log(obj);
     obj.category = this.state.modCategoryEntry
     obj.amount = this.state.modAmountEntry;
     obj.comment = this.state.modCommentEntry;
     obj.date = this.state.modDateEntry;
-    console.log(obj);
-    this.setState({
-      modCategoryEntry: "",
-      modAmountEntry: "",
-      modCommentEntry: "",
-      modDateEntry: "",
-      modify: false,
-      modifyIndex: -1
-    });
+    axios.put('/spending', obj)
+      .then(data => {
+        if (data.data._id === _id) {
+          this.setState({
+            modCategoryEntry: "",
+            modAmountEntry: "",
+            modCommentEntry: "",
+            modDateEntry: "",
+            modify: false,
+            modifyIndex: -1,
+            budgetItems: newArr
+          });
+        } else {
+          console.log("ERROR: DIDN'T MODIFY ON DB");
+        }
+      })
   }
 
   handleStartModify(event) {
