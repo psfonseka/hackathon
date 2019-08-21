@@ -38,8 +38,21 @@ exports.insertOneSpending = query => {
   return expenditure.save().catch(err => console.log(err));
 };
 
-//Queries-removeOne
+//Queries-updateOne
+exports.updateOne = query => {
+  return Spending.findByIdAndUpdate(
+    { _id: query._id },
+    {
+      category: query.category,
+      amount: query.amount,
+      date: query.date,
+      comment: query.comment
+    },
+    { upsert: true, new: true }
+  ).exec();
+};
 
+//Queries-removeOne
 exports.removeOne = query => {
   return Spending.findByIdAndRemove({ _id: query._id }).exec();
 };

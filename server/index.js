@@ -29,11 +29,13 @@ app.post("/spending", (req, res) => {
     .catch(err => res.status(500).send("an error occurred"));
 });
 
-//TODO: implement the update route
 //Routes-update route
-// app.put("/spending", (req, res)=>{
-
-// })
+app.put("/spending", (req, res) => {
+  let query = req.body;
+  db.updateOne(query)
+    .then(result => res.send(result))
+    .catch(err => res.status(500).send("error in updating"));
+});
 
 //Routes-delete route
 app.delete("/spending", (req, res) => {
