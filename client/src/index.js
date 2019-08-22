@@ -196,17 +196,17 @@ class App extends React.Component {
     if (event) {
       event.preventDefault();
       col = event.target.getAttribute("value");
+      if (col === this.state.sorting) {
+        this.setState({
+          reverse: (this.state.reverse) ? false : true
+        })
+      } else {
+        this.setState({
+          reverse: true
+        })
+      }
     } else {
       col = this.state.sorting;
-    }
-    if (col === this.state.sorting) {
-      this.setState({
-        reverse: (this.state.reverse) ? false : true
-      })
-    } else {
-      this.setState({
-        reverse: true
-      })
     }
     let newArr = this.state.budgetItems.slice();
     if (col === "amount") {
