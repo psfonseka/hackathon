@@ -20,6 +20,8 @@ class App extends React.Component {
       modifyIndex: -1,
       budgetItems: [],
       bar: false,
+      reverse: false,
+      sorting: "",
       pieData: {
         values: []
       },
@@ -35,6 +37,7 @@ class App extends React.Component {
     this.handleApplyModify = this.handleApplyModify.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
     this.handleChart = this.handleChart.bind(this);
+    this.handleSort = this.handleSort.bind(this);
   }
 
   componentDidMount() {
@@ -72,7 +75,10 @@ class App extends React.Component {
       let results = data.data.results;
       this.setState({
         budgetItems: results
-      }, () => this.calculateChart(results));
+      }, () => {
+        this.calculateChart(results);
+        this.handleSort(null);
+      });
     });
   }
 
@@ -94,7 +100,10 @@ class App extends React.Component {
         amountEntry: "",
         dateEntry: "",
         commentEntry: ""
-      }, () => this.calculateChart(newArr));
+      }, () => {
+        this.calculateChart(newArr);
+        this.handleSort(null);
+      });
     });
   }
 
@@ -182,6 +191,42 @@ class App extends React.Component {
     });
   }
 
+  handleSort(event) {
+    let col;
+    if (event) {
+      event.preventDefault();
+      col = event.target.getAttribute("value");
+      if (col === this.state.sorting) {
+        this.setState({
+          reverse: (this.state.reverse) ? false : true
+        })
+      } else {
+        this.setState({
+          reverse: true
+        })
+      }
+    } else {
+      col = this.state.sorting;
+    }
+    let newArr = this.state.budgetItems.slice();
+    if (col === "amount") {
+      newArr.sort(function(a, b) { 
+        return a[col]- b[col];
+      })
+    } else {
+      newArr.sort(function (a, b) {
+        return ('' + a[col]).localeCompare(b[col]);
+      })
+    }
+    if (this.state.reverse === true) {
+      newArr.reverse();
+    }
+    this.setState({
+      budgetItems: newArr,
+      sorting: col
+    });
+  }
+
   render() {
     return (
       <div>
@@ -190,10 +235,10 @@ class App extends React.Component {
           <table id="finances">
             <tbody>
               <tr>
-                <td>Category</td>
-                <td>Amount</td>
-                <td>Date</td>
-                <td>Comment</td>
+                <td value="category" onClick={this.handleSort}>Category</td>
+                <td value="amount" onClick={this.handleSort}>Amount</td>
+                <td value="date" onClick={this.handleSort}>Date</td>
+                <td value="comment" onClick={this.handleSort}>Comment</td>
                 <td>Actions</td>
               </tr>
               <tr>
