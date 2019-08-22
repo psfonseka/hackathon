@@ -75,7 +75,10 @@ class App extends React.Component {
       let results = data.data.results;
       this.setState({
         budgetItems: results
-      }, () => this.calculateChart(results));
+      }, () => {
+        this.calculateChart(results);
+        this.handleSort(null);
+      });
     });
   }
 
@@ -97,7 +100,10 @@ class App extends React.Component {
         amountEntry: "",
         dateEntry: "",
         commentEntry: ""
-      }, () => this.calculateChart(newArr));
+      }, () => {
+        this.calculateChart(newArr);
+        this.handleSort(null);
+      });
     });
   }
 
@@ -186,8 +192,13 @@ class App extends React.Component {
   }
 
   handleSort(event) {
-    event.preventDefault();
-    let col = event.target.getAttribute("value");
+    let col;
+    if (event) {
+      event.preventDefault();
+      col = event.target.getAttribute("value");
+    } else {
+      col = this.state.sorting;
+    }
     if (col === this.state.sorting) {
       this.setState({
         reverse: (this.state.reverse) ? false : true
