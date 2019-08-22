@@ -109,7 +109,11 @@ class App extends React.Component {
 
   onKeyPress(event) {
     if (event.which === 13) {
-      this.handleSubmit(event);
+      if (this.state.modify) {
+        this.handleApplyModify(event);
+      } else {
+        this.handleSubmit(event);
+      }
     }
   }
 
@@ -297,6 +301,8 @@ class App extends React.Component {
                             name="modCategoryEntry"
                             value={this.state.modCategoryEntry}
                             onChange={this.handleInputChange}
+                            onKeyPress={this.onKeyPress}
+
                           />
                         </td>
                         <td>
@@ -304,6 +310,8 @@ class App extends React.Component {
                             name="modAmountEntry"
                             value={this.state.modAmountEntry}
                             onChange={this.handleInputChange}
+                            onKeyPress={this.onKeyPress}
+
                           />
                         </td>
                         <td>
@@ -311,6 +319,8 @@ class App extends React.Component {
                             name="modDateEntry"
                             value={this.state.modDateEntry}
                             onChange={this.handleInputChange}
+                            onKeyPress={this.onKeyPress}
+
                           />
                         </td>
                         <td>
@@ -318,6 +328,8 @@ class App extends React.Component {
                             name="modCommentEntry"
                             value={this.state.modCommentEntry}
                             onChange={this.handleInputChange}
+                            onKeyPress={this.onKeyPress}
+
                           />
                         </td>
                         <td>
